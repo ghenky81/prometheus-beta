@@ -23,7 +23,7 @@ def establish_ftp_connection(
 
     Raises:
         ValueError: If any required connection parameters are missing
-        ftplib.all_errors: For various FTP-related connection errors
+        ConnectionError: For various FTP-related connection errors
     """
     # Validate input parameters
     if not host or not username or not password:
@@ -32,11 +32,17 @@ def establish_ftp_connection(
     try:
         # Establish FTP connection
         ftp = ftplib.FTP(timeout=timeout)
-        ftp.connect(host=host, port=port)
+        try:
+            ftp.connect(host=host, port=port)
+        except ftplib.all_errors as connect_err:
+            raise ConnectionError(f"FTP Connection Error: {str(connect_err)}")
         
-        # Authenticate
-        welcome_msg = ftp.login(user=username, passwd=password)
+        try:
+            # Authenticate
+            welcome_msg = ftp.login(user=username, passwd=password)
+        except ftplib.all_errors as login_err:
+            raise ConnectionError(f"FTP Login Error: {str(login_err)}")
         
         return ftp, welcome_msg
-    except ftplib.all_errors as e:
+    except Exception as e:
         raise ConnectionError(f"FTP Connection Error: {str(e)}")
