@@ -33,6 +33,5 @@ def test_error_handling():
 
 def test_precision():
     """Test conversion precision."""
-    # Check that the result is within an acceptable floating-point range
-    result = celsius_to_fahrenheit(10)
-    assert abs(result - 50) < 1e-10  # Allow for tiny floating-point variations
+    # Check exact rounding to 2 decimal places
+    assert celsius_to_fahrenheit(10) == 50
