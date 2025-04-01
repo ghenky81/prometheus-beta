@@ -34,7 +34,8 @@ class TestFTPConnection:
         # Test connection failures
         with patch('ftplib.FTP') as mock_ftp:
             # Simulate connection error
-            mock_ftp.side_effect = ftplib.all_errors("Connection failed")
+            mock_instance = MagicMock()
+            mock_instance.connect.side_effect = ftplib.error_perm("Connection failed")
 
             with pytest.raises(ConnectionError, match="FTP Connection Error"):
                 establish_ftp_connection(
