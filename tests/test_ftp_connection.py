@@ -31,15 +31,31 @@ class TestFTPConnection:
             establish_ftp_connection(host='', username='', password='')
 
     def test_connection_failure(self):
-        # Test connection failures
+        # Test connection failures during connection
         with patch('ftplib.FTP') as mock_ftp:
-            # Simulate connection error
             mock_instance = MagicMock()
+            # Simulate connection error
             mock_instance.connect.side_effect = ftplib.error_perm("Connection failed")
+            mock_ftp.return_value = mock_instance
 
             with pytest.raises(ConnectionError, match="FTP Connection Error"):
                 establish_ftp_connection(
                     host='invalid.server.com', 
+                    username='baduser', 
+                    password='badpass'
+                )
+
+    def test_login_failure(self):
+        # Test login failures
+        with patch('ftplib.FTP') as mock_ftp:
+            mock_instance = MagicMock()
+            # Connection succeeds, but login fails
+            mock_instance.login.side_effect = ftplib.error_perm("Login failed")
+            mock_ftp.return_value = mock_instance
+
+            with pytest.raises(ConnectionError, match="FTP Login Error"):
+                establish_ftp_connection(
+                    host='test.server.com', 
                     username='baduser', 
                     password='badpass'
                 )
