@@ -21,7 +21,7 @@ def test_negative_celsius():
 def test_float_input():
     """Test conversion with float inputs."""
     assert celsius_to_fahrenheit(25.5) == 77.9
-    assert celsius_to_fahrenheit(-10.5) == 12.9
+    assert celsius_to_fahrenheit(-10.5) == 13.1
 
 def test_error_handling():
     """Test error handling for invalid inputs."""
