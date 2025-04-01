@@ -16,4 +16,5 @@ def celsius_to_fahrenheit(celsius: float) -> float:
         raise TypeError("Input must be a number")
     
     # Conversion formula: °F = (°C × 9/5) + 32
-    return (celsius * 9/5) + 32
+    # Use round() to handle floating-point precision issues
+    return round((celsius * 9/5) + 32, 2)
