@@ -8,7 +8,8 @@ class TestColoredLogger:
         """Test default logging behavior."""
         ColoredLogger.log("Test message")
         captured = capsys.readouterr()
-        assert "Test message" in captured.out
+        # Check for the ANSI color codes and the message
+        assert "\x1b[47m\x1b[30mTest message\x1b[0m" in captured.out
     
     def test_background_colors(self, capsys):
         """Test all background colors."""
@@ -16,6 +17,8 @@ class TestColoredLogger:
         for color in colors:
             ColoredLogger.log("Color test", background_color=color)
             captured = capsys.readouterr()
+            # Verify ANSI color code and message
+            assert f"\x1b[4{colors.index(color)+1}m" in captured.out
             assert "Color test" in captured.out
     
     def test_invalid_background_color(self):
@@ -27,7 +30,7 @@ class TestColoredLogger:
         """Test custom text color."""
         ColoredLogger.log("Test", background_color='white', text_color='\033[31m')
         captured = capsys.readouterr()
-        assert "Test" in captured.out
+        assert "\x1b[47m\x1b[31mTest\x1b[0m" in captured.out
     
     def test_log_methods(self, capsys):
         """Test special log methods."""
@@ -36,9 +39,9 @@ class TestColoredLogger:
         ColoredLogger.error("Error message")
         
         captured = capsys.readouterr()
-        assert "Debug message" in captured.out
-        assert "Warning message" in captured.out
-        assert "Error message" in captured.out
+        assert "\x1b[44m\x1b[37mDebug message\x1b[0m" in captured.out
+        assert "\x1b[43m\x1b[30mWarning message\x1b[0m" in captured.out
+        assert "\x1b[41m\x1b[37mError message\x1b[0m" in captured.out
     
     def test_log_to_file(self):
         """Test logging to a file-like object."""
