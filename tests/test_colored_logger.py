@@ -1,6 +1,5 @@
 import io
 import sys
-import re
 import pytest
 from src.colored_logger import ColoredLogger
 
@@ -11,7 +10,7 @@ class TestColoredLogger:
         captured = capsys.readouterr()
         output = captured.out.strip()
         
-        assert re.match(r'\x1b\[47m\x1b\[30mTest message\x1b\[0m', output)
+        assert output == "\x1b[47m\x1b[30mTest message\x1b[0m"
     
     def test_background_colors(self, capsys):
         """Test all background colors."""
@@ -20,14 +19,18 @@ class TestColoredLogger:
             'blue': '\x1b[44m', 'magenta': '\x1b[45m', 'cyan': '\x1b[46m', 
             'white': '\x1b[47m'
         }
+        color_text_map = {
+            'red': '\x1b[37m', 'green': '\x1b[30m', 'yellow': '\x1b[30m', 
+            'blue': '\x1b[37m', 'magenta': '\x1b[37m', 'cyan': '\x1b[30m', 
+            'white': '\x1b[30m'
+        }
         
         for color, color_code in colors.items():
             ColoredLogger.log("Color test", background_color=color)
             captured = capsys.readouterr()
             output = captured.out.strip()
             
-            assert re.match(f'{color_code}', output)
-            assert 'Color test' in output
+            assert output == f"{color_code}{color_text_map[color]}Color test\x1b[0m"
     
     def test_invalid_background_color(self):
         """Test that invalid background colors raise ValueError."""
@@ -40,7 +43,7 @@ class TestColoredLogger:
         captured = capsys.readouterr()
         output = captured.out.strip()
         
-        assert re.match(r'\x1b\[47m\x1b\[31mTest\x1b\[0m', output)
+        assert output == "\x1b[47m\x1b[31mTest\x1b[0m"
     
     def test_log_methods(self, capsys):
         """Test special log methods."""
@@ -51,9 +54,9 @@ class TestColoredLogger:
         captured = capsys.readouterr()
         outputs = captured.out.strip().split('\n')
         
-        assert re.match(r'\x1b\[44m\x1b\[37mDebug message\x1b\[0m', outputs[0])
-        assert re.match(r'\x1b\[43m\x1b\[30mWarning message\x1b\[0m', outputs[1])
-        assert re.match(r'\x1b\[41m\x1b\[37mError message\x1b\[0m', outputs[2])
+        assert outputs[0] == "\x1b[44m\x1b[37mDebug message\x1b[0m"
+        assert outputs[1] == "\x1b[43m\x1b[30mWarning message\x1b[0m"
+        assert outputs[2] == "\x1b[41m\x1b[37mError message\x1b[0m"
     
     def test_log_to_file(self):
         """Test logging to a file-like object."""
@@ -63,5 +66,5 @@ class TestColoredLogger:
         output.seek(0)
         
         content = output.read().strip()
-        assert re.match(r'\x1b\[47m\x1b\[30mFile test\x1b\[0m', content)
+        assert content == "\x1b[47m\x1b[30mFile test\x1b[0m"
         output.close()
