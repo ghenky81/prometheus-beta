@@ -5,7 +5,7 @@ from src.brotli_compression import brotli_compress, brotli_decompress
 
 def test_brotli_compress_string():
     """Test compression of a string."""
-    input_string = "Hello, Brotli compression!"
+    input_string = "Hello, Brotli compression! " * 10  # Make input large enough to compress
     compressed = brotli_compress(input_string)
     assert isinstance(compressed, bytes)
     assert len(compressed) < len(input_string.encode('utf-8'))
@@ -13,7 +13,7 @@ def test_brotli_compress_string():
 
 def test_brotli_compress_bytes():
     """Test compression of bytes."""
-    input_bytes = b"Binary data compression test"
+    input_bytes = b"Binary data compression test" * 10  # Make input large enough to compress
     compressed = brotli_compress(input_bytes)
     assert isinstance(compressed, bytes)
     assert len(compressed) < len(input_bytes)
@@ -29,13 +29,14 @@ def test_brotli_decompress():
 
 def test_brotli_compress_quality():
     """Test different compression qualities."""
-    input_string = "Test compression quality"
+    input_string = "Test compression quality " * 10  # Make input large to show compression
     compressed_default = brotli_compress(input_string)
     compressed_low = brotli_compress(input_string, quality=1)
     compressed_high = brotli_compress(input_string, quality=11)
     
+    # For large inputs, higher quality should result in smaller compressed size
+    assert len(compressed_high) <= len(compressed_default)
     assert len(compressed_default) >= len(compressed_low)
-    assert len(compressed_default) <= len(compressed_high)
 
 
 def test_invalid_input_type():
@@ -82,7 +83,7 @@ def test_edge_cases():
 
 def test_compression_modes():
     """Test different compression modes."""
-    text_input = "Compression mode test"
+    text_input = "Compression mode test" * 10
     
     # Test generic mode
     generic_compressed = brotli_compress(text_input, mode=brotli.MODE_GENERIC)
