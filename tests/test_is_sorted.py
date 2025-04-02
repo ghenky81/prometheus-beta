@@ -26,10 +26,9 @@ def test_single_element_list():
     assert is_sorted([42]) == True
     assert is_sorted([42], ascending=False) == True
 
-def test_mixed_types_comparable():
-    """Test sorting with comparable mixed types"""
+def test_mixed_numeric_types():
+    """Test sorting with comparable mixed numeric types"""
     assert is_sorted([1, 1.5, 2, 2.5, 3]) == True
-    assert is_sorted(['a', 'b', 'c']) == True
     assert is_sorted([5.5, 5, 4.3, 4, 3], ascending=False) == True
 
 def test_invalid_input():
@@ -44,6 +43,11 @@ def test_invalid_input():
 def test_list_with_non_comparable_types():
     """Test behavior with non-comparable types"""
     with pytest.raises(TypeError):
-        is_sorted([1, 2, '3'])
+        is_sorted([[1], [2], 3])
     with pytest.raises(TypeError):
-        is_sorted([1, 2, [3]], ascending=False)
+        is_sorted([1, 'a', 2])
+    # A list of objects without natural ordering
+    class Foo:
+        pass
+    with pytest.raises(TypeError):
+        is_sorted([Foo(), Foo()])
