@@ -25,19 +25,14 @@ def max_subarray_sum(arr, k):
     if k <= 0:
         return []
     
-    # Initialize the first window sum
-    window_sum = sum(arr[:k])
-    max_sum = window_sum
-    max_subarray = arr[:k]
+    # Compute all possible subarrays of length k
+    subarrays = [arr[i:i+k] for i in range(len(arr) - k + 1)]
     
-    # Slide the window through the array
-    for i in range(1, len(arr) - k + 1):
-        # Remove the first element of previous window and add the next element
-        window_sum = window_sum - arr[i-1] + arr[i+k-1]
-        
-        # Update max sum and subarray if current window sum is larger
-        if window_sum > max_sum:
-            max_sum = window_sum
-            max_subarray = arr[i:i+k]
+    # If no subarrays found, return empty list
+    if not subarrays:
+        return []
+    
+    # Find the subarray with the maximum sum
+    max_subarray = max(subarrays, key=sum)
     
     return max_subarray
