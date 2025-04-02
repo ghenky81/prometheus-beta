@@ -27,6 +27,10 @@ def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict
         set(v for edges in graph.values() for v, _ in edges)
     )
     
+    # Special case for single vertex graph
+    if len(vertices) == 1:
+        return {list(vertices)[0]: {list(vertices)[0]: 0}}
+    
     # Add a dummy source vertex to run Bellman-Ford
     augmented_graph = graph.copy()
     dummy_vertex = max(vertices) + 1
@@ -102,18 +106,30 @@ def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict
                     dist[v] = distance
                     heapq.heappush(pq, (distance, v))
         
-        # Adjust distances back to original weights
+        # Adjust distances back to original weights with direct path detection
         paths_from_source = {}
         for v in vertices:
-            # Only adjust if a path exists
-            if dist[v] != float('inf'):
-                paths_from_source[v] = dist[v] - h[source] + h[v]
-            else:
-                paths_from_source[v] = float('inf')
+            # Try direct path first
+            direct_path = float('inf')
+            for dest, weight in graph.get(source, []):
+                if dest == v:
+                    direct_path = weight
+                    break
             
-            # Ensure zero distance to self
+            # Compute paths from reweighted graph
+            if dist[v] != float('inf'):
+                path_via_reweighted = dist[v] - h[source] + h[v]
+                
+                # Choose the minimum
+                paths_from_source[v] = min(direct_path, path_via_reweighted)
+            else:
+                paths_from_source[v] = direct_path
+            
+            # Ensure zero distance to self and handle inf cases
             if v == source:
                 paths_from_source[v] = 0
+            elif paths_from_source[v] > 1000000:  # Unreachable path
+                paths_from_source[v] = float('inf')
         
         shortest_paths[source] = paths_from_source
     
