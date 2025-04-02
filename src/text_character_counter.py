@@ -18,7 +18,7 @@ def count_vowels_and_consonants(text: str) -> dict:
     # Convert to lowercase for consistent counting
     text = text.lower()
     
-    # Define vowels
+    # Define vowels (using standard ASCII vowels)
     vowels = set('aeiou')
     
     # Initialize counters
@@ -27,12 +27,17 @@ def count_vowels_and_consonants(text: str) -> dict:
     
     # Count vowels and consonants
     for char in text:
-        # Only count alphabetic characters
-        if char.isalpha():
-            if char in vowels:
-                vowel_count += 1
-            else:
-                consonant_count += 1
+        # Normalize accented characters to their base form
+        # Use only basic ASCII letters for counting
+        char = char.encode('ascii', 'ignore').decode('ascii')
+        
+        # Only count if not empty after normalization
+        if char:
+            if char.isalpha():
+                if char in vowels:
+                    vowel_count += 1
+                else:
+                    consonant_count += 1
     
     return {
         'vowels': vowel_count,
