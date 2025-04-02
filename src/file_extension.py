@@ -25,12 +25,10 @@ def get_file_extension(file_path):
     # Split the full path into directory and filename
     _, filename = os.path.split(file_path)
     
-    # Special case: if filename starts with a dot and has no other dots, it's not an extension
-    if filename.startswith('.') and filename.count('.') <= 1:
+    # If filename is just a dot-prefixed name without an extension
+    if filename.startswith('.') and '.' not in filename[1:]:
         return ''
     
-    # Split the filename by dot
+    # Get the last part after the last dot
     parts = filename.split('.')
-    
-    # Return the extension (last part) if there are multiple parts, else empty string
     return parts[-1] if len(parts) > 1 else ''
