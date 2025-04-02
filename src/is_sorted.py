@@ -23,6 +23,11 @@ def is_sorted(lst, ascending=True):
     if len(lst) <= 1:
         return True
 
+    # Ensure all elements have the same type and are comparable
+    first_type = type(lst[0])
+    if not all(isinstance(x, first_type) for x in lst):
+        raise TypeError("All list elements must have the same comparable type")
+
     # Determine comparison function based on ascending parameter
     if ascending:
         # Check if each element is less than or equal to the next
