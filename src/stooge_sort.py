@@ -18,26 +18,34 @@ def stooge_sort(arr):
     if not isinstance(arr, list):
         raise TypeError("Input must be a list")
     
-    # Handle empty or single-element lists
-    if len(arr) <= 1:
-        return arr
+    def _stooge_sort_recursive(arr, i, j):
+        """
+        Recursive helper function to perform Stooge Sort.
+        
+        Args:
+            arr (list): The list to be sorted.
+            i (int): Starting index.
+            j (int): Ending index.
+        """
+        # If first element is larger than last, swap them
+        if arr[i] > arr[j]:
+            arr[i], arr[j] = arr[j], arr[i]
+        
+        # If more than 2 elements in this segment
+        if j - i + 1 > 2:
+            t = (j - i + 1) // 3
+            
+            # Recursively sort first 2/3 
+            _stooge_sort_recursive(arr, i, j - t)
+            
+            # Recursively sort last 2/3
+            _stooge_sort_recursive(arr, i + t, j)
+            
+            # Recursively sort first 2/3 again
+            _stooge_sort_recursive(arr, i, j - t)
     
-    # If first element is larger than last, swap them
-    if arr[0] > arr[-1]:
-        arr[0], arr[-1] = arr[-1], arr[0]
-    
-    # If list has 3 or more elements, recursively sort
-    if len(arr) > 2:
-        # Calculate two-thirds point
-        t = len(arr) // 3
-        
-        # Recursively sort first 2/3
-        stooge_sort(arr[:len(arr)-t])
-        
-        # Recursively sort last 2/3
-        stooge_sort(arr[t:])
-        
-        # Recursively sort first 2/3 again
-        stooge_sort(arr[:len(arr)-t])
+    # Call recursive helper function on full list if not empty
+    if arr:
+        _stooge_sort_recursive(arr, 0, len(arr) - 1)
     
     return arr
