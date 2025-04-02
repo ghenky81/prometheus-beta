@@ -30,6 +30,10 @@ def convert_to_pascal_case(input_string: str) -> str:
     if not input_string:
         return ""
     
+    # Check if the input is already in Pascal case and meets requirements
+    if input_string.isalpha() and input_string[0].isupper() and all(c.isupper() or c.islower() for c in input_string[1:]):
+        return input_string
+    
     # Replace non-alphanumeric characters with spaces
     cleaned_string = ''.join(char if char.isalnum() else ' ' for char in input_string)
     
