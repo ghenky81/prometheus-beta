@@ -80,11 +80,11 @@ def boruvka_mst(num_vertices: int, edges: List[Tuple[int, int, int]]) -> List[Tu
     num_sets = num_vertices
     
     while num_sets > 1:
-        # Find cheapest edge for each component
+        # Store cheapest edges for each set
         cheapest = [None] * num_vertices
         
+        # Find cheapest edge for each component
         for u, v, weight in edges:
-            # Find set roots for u and v
             set_u = ds.find(u)
             set_v = ds.find(v)
             
@@ -93,11 +93,16 @@ def boruvka_mst(num_vertices: int, edges: List[Tuple[int, int, int]]) -> List[Tu
                 continue
             
             # Update cheapest edge for each set
-            if cheapest[set_u] is None or weight < cheapest[set_u][2]:
+            if (cheapest[set_u] is None or 
+                weight < cheapest[set_u][2]):
                 cheapest[set_u] = (u, v, weight)
             
-            if cheapest[set_v] is None or weight < cheapest[set_v][2]:
+            if (cheapest[set_v] is None or 
+                weight < cheapest[set_v][2]):
                 cheapest[set_v] = (u, v, weight)
+        
+        # Track if any edge was added in this iteration
+        edge_added = False
         
         # Add selected cheapest edges to MST
         for cheap_edge in cheapest:
@@ -108,9 +113,10 @@ def boruvka_mst(num_vertices: int, edges: List[Tuple[int, int, int]]) -> List[Tu
                 if ds.union(u, v):
                     mst.append((u, v, weight))
                     num_sets -= 1
+                    edge_added = True
         
-        # Break if no more edges can be added
-        if not any(cheapest):
+        # If no edge was added, break to prevent infinite loop
+        if not edge_added:
             break
     
     return mst
