@@ -3,7 +3,7 @@ def convert_to_alternating_dot_case(input_string):
     Convert a string to alternating dot case.
 
     In alternating dot case, characters alternate between lowercase and uppercase,
-    with each character separated by a dot.
+    with each character separated by a dot. Preserves case of non-letter characters.
 
     Args:
         input_string (str): The input string to convert.
@@ -20,6 +20,8 @@ def convert_to_alternating_dot_case(input_string):
         'h.E.l.L.o'
         >>> convert_to_alternating_dot_case("Python")
         'p.Y.t.H.o.N'
+        >>> convert_to_alternating_dot_case("hello world")
+        'h.E.l.L.o. .W.o.R.l.D'
     """
     # Validate input
     if not isinstance(input_string, str):
@@ -30,16 +32,22 @@ def convert_to_alternating_dot_case(input_string):
     
     # Convert to alternating dot case
     result = []
-    for i, char in enumerate(input_string):
-        # Even indices (0, 2, 4...) are lowercase
-        # Odd indices (1, 3, 5...) are uppercase
-        if i % 2 == 0:
-            result.append(char.lower())
+    is_uppercase_turn = False
+    
+    for char in input_string:
+        # If character is a letter, alternate case
+        if char.isalpha():
+            if is_uppercase_turn:
+                result.append(char.upper())
+            else:
+                result.append(char.lower())
+            is_uppercase_turn = not is_uppercase_turn
         else:
-            result.append(char.upper())
+            # Non-letter characters keep their original form
+            result.append(char)
         
-        # Add dot between characters, except after the last character
-        if i < len(input_string) - 1:
+        # Always add a dot, except after the last character
+        if char != input_string[-1]:
             result.append('.')
     
     return ''.join(result)
