@@ -22,9 +22,11 @@ def get_file_extension(file_path):
     if not file_path:
         raise ValueError("File path cannot be empty")
     
-    # Use os.path.splitext to extract the extension
-    # This handles various cases like filenames with multiple dots
-    _, extension = os.path.splitext(file_path)
+    # Extract filename (with extension) from full path
+    filename = os.path.basename(file_path)
+    
+    # Separate extension
+    _, extension = os.path.splitext(filename)
     
     # Remove the leading dot and return
     return extension.lstrip('.')
