@@ -9,7 +9,7 @@ class TestColoredLogger:
         ColoredLogger.log("Test message")
         captured = capsys.readouterr()
         output = captured.out
-        
+        print(f"Default log output: [{output}]")
         assert "\x1b[47m\x1b[30mTest message\x1b[0m" in output
     
     def test_background_colors(self, capsys):
@@ -29,6 +29,7 @@ class TestColoredLogger:
             ColoredLogger.log("Color test", background_color=color)
             captured = capsys.readouterr()
             output = captured.out
+            print(f"Background color {color} output: [{output}]")
             
             assert color_code in output
             assert "Color test" in output
@@ -44,6 +45,7 @@ class TestColoredLogger:
         ColoredLogger.log("Test", background_color='white', text_color='\x1b[31m')
         captured = capsys.readouterr()
         output = captured.out
+        print(f"Custom text color output: [{output}]")
         
         assert "\x1b[47m\x1b[31mTest\x1b[0m" in output
     
@@ -55,6 +57,7 @@ class TestColoredLogger:
         
         captured = capsys.readouterr()
         output = captured.out
+        print(f"Log methods output: [{output}]")
         
         assert "\x1b[44m\x1b[37mDebug message\x1b[0m" in output
         assert "\x1b[43m\x1b[30mWarning message\x1b[0m" in output
