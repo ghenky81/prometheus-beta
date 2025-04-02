@@ -8,9 +8,8 @@ class TestColoredLogger:
         """Test default logging behavior."""
         ColoredLogger.log("Test message")
         captured = capsys.readouterr()
-        output = captured.out
-        
-        assert "\x1b[47m\x1b[30mTest message\x1b[0m" in output
+        output = captured.out.strip()
+        assert output == "\x1b[47m\x1b[30mTest message\x1b[0m"
     
     def test_background_colors(self, capsys):
         """Test all background colors."""
@@ -28,11 +27,9 @@ class TestColoredLogger:
         for color, color_code in colors.items():
             ColoredLogger.log("Color test", background_color=color)
             captured = capsys.readouterr()
-            output = captured.out
+            output = captured.out.strip()
             
-            assert color_code in output
-            assert "Color test" in output
-            assert "\x1b[0m" in output
+            assert output == f"{color_code}{color_text_map[color]}Color test\x1b[0m"
     
     def test_invalid_background_color(self):
         """Test that invalid background colors raise ValueError."""
@@ -41,11 +38,11 @@ class TestColoredLogger:
     
     def test_custom_text_color(self, capsys):
         """Test custom text color."""
-        ColoredLogger.log("Test", background_color='white', text_color='\033[31m')
+        ColoredLogger.log("Test", background_color='white', text_color='\x1b[31m')
         captured = capsys.readouterr()
-        output = captured.out
+        output = captured.out.strip()
         
-        assert "\x1b[47m\x1b[31mTest\x1b[0m" in output
+        assert output == "\x1b[47m\x1b[31mTest\x1b[0m"
     
     def test_log_methods(self, capsys):
         """Test special log methods."""
@@ -54,11 +51,11 @@ class TestColoredLogger:
         ColoredLogger.error("Error message")
         
         captured = capsys.readouterr()
-        output = captured.out
+        outputs = captured.out.strip().split('\n')
         
-        assert "\x1b[44m\x1b[37mDebug message\x1b[0m" in output
-        assert "\x1b[43m\x1b[30mWarning message\x1b[0m" in output
-        assert "\x1b[41m\x1b[37mError message\x1b[0m" in output
+        assert outputs[0] == "\x1b[44m\x1b[37mDebug message\x1b[0m"
+        assert outputs[1] == "\x1b[43m\x1b[30mWarning message\x1b[0m"
+        assert outputs[2] == "\x1b[41m\x1b[37mError message\x1b[0m"
     
     def test_log_to_file(self):
         """Test logging to a file-like object."""
@@ -67,6 +64,6 @@ class TestColoredLogger:
         ColoredLogger.log("File test", file=output)
         output.seek(0)
         
-        content = output.read()
-        assert "\x1b[47m\x1b[30mFile test\x1b[0m" in content
+        content = output.read().strip()
+        assert content == "\x1b[47m\x1b[30mFile test\x1b[0m"
         output.close()
