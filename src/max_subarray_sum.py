@@ -25,14 +25,10 @@ def max_subarray_sum(arr, k):
     if k <= 0:
         return []
     
-    # Compute all possible subarrays of length k
-    subarrays = [arr[i:i+k] for i in range(len(arr) - k + 1)]
-    
-    # If no subarrays found, return empty list
-    if not subarrays:
-        return []
+    # Compute all possible subarrays of length k with their sums
+    subarrays_with_sums = [(arr[i:i+k], sum(arr[i:i+k])) for i in range(len(arr) - k + 1)]
     
     # Find the subarray with the maximum sum
-    max_subarray = max(subarrays, key=sum)
+    max_subarray = max(subarrays_with_sums, key=lambda x: x[1])[0]
     
     return max_subarray
