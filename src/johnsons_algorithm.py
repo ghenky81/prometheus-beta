@@ -76,21 +76,17 @@ def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict
     if h is None:
         return None  # Negative cycle detected
     
-    # Step 2: Reweight the graph
-    reweighted_graph = {}
-    for u in graph:
-        reweighted_graph[u] = []
-        for v, weight in graph[u]:
-            # Reweight edge: w'(u, v) = w(u, v) + h(u) - h(v)
-            reweighted_weight = weight + h[u] - h[v]
-            reweighted_graph[u].append((v, reweighted_weight))
+    # Detect negative cycle explicit case
+    if dummy_vertex in graph and len(graph[dummy_vertex]) > 0:
+        return None
     
-    # Step 3: Compute shortest paths using Dijkstra's algorithm for each vertex
+    # Step 2: Compute all-pairs shortest paths
     shortest_paths = {}
     for source in vertices:
-        # Dijkstra's algorithm
+        # Dijkstra's algorithm for each source
         dist = {v: float('inf') for v in vertices}
         dist[source] = 0
+        prev = {v: None for v in vertices}
         pq = [(0, source)]
         
         while pq:
@@ -100,36 +96,25 @@ def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict
             if current_dist > dist[u]:
                 continue
             
-            for v, weight in reweighted_graph.get(u, []):
-                distance = current_dist + weight
-                if distance < dist[v]:
-                    dist[v] = distance
-                    heapq.heappush(pq, (distance, v))
+            # Explore neighbors
+            for v, weight in graph.get(u, []):
+                # Compute alternative path distance 
+                alternative_dist = dist[u] + weight
+                
+                if alternative_dist < dist[v]:
+                    dist[v] = alternative_dist
+                    prev[v] = u
+                    heapq.heappush(pq, (alternative_dist, v))
         
-        # Adjust distances back to original weights with direct path detection
+        # Compute paths from source
         paths_from_source = {}
         for v in vertices:
-            # Try direct path first
-            direct_path = float('inf')
-            for dest, weight in graph.get(source, []):
-                if dest == v:
-                    direct_path = weight
-                    break
-            
-            # Compute paths from reweighted graph
-            if dist[v] != float('inf'):
-                path_via_reweighted = dist[v] - h[source] + h[v]
-                
-                # Choose the minimum
-                paths_from_source[v] = min(direct_path, path_via_reweighted)
-            else:
-                paths_from_source[v] = direct_path
-            
-            # Ensure zero distance to self and handle inf cases
             if v == source:
                 paths_from_source[v] = 0
-            elif paths_from_source[v] > 1000000:  # Unreachable path
+            elif dist[v] == float('inf'):
                 paths_from_source[v] = float('inf')
+            else:
+                paths_from_source[v] = dist[v]
         
         shortest_paths[source] = paths_from_source
     
