@@ -10,14 +10,14 @@ class ColoredLogger:
     
     # ANSI color codes for background colors
     COLORS = {
-        'red': '\033[41m',
-        'green': '\033[42m', 
-        'yellow': '\033[43m',
-        'blue': '\033[44m',
-        'magenta': '\033[45m',
-        'cyan': '\033[46m',
-        'white': '\033[47m',
-        'reset': '\033[0m'
+        'red': '\x1b[41m',
+        'green': '\x1b[42m', 
+        'yellow': '\x1b[43m',
+        'blue': '\x1b[44m',
+        'magenta': '\x1b[45m',
+        'cyan': '\x1b[46m',
+        'white': '\x1b[47m',
+        'reset': '\x1b[0m'
     }
     
     @classmethod
@@ -44,14 +44,13 @@ class ColoredLogger:
         if text_color is None:
             # Default text color for light backgrounds
             light_backgrounds = ['white', 'yellow', 'cyan']
-            text_color = '\033[30m' if background_color in light_backgrounds else '\033[37m'
+            text_color = '\x1b[30m' if background_color in light_backgrounds else '\x1b[37m'
         
         # Construct the colored log message
         colored_message = f"{cls.COLORS[background_color]}{text_color}{message}{cls.COLORS['reset']}"
         
         # Print the message
-        print(colored_message, file=file)
-        file.flush()  # Ensure output is immediate
+        print(colored_message, file=file, flush=True)
         
     @classmethod
     def debug(cls, message, **kwargs):
