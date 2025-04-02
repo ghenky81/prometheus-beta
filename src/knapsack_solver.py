@@ -16,7 +16,11 @@ def solve_knapsack(items, capacity):
     if not isinstance(capacity, (int, float)) or capacity < 0:
         raise ValueError("Capacity must be a non-negative number")
     
-    if not items or not all(isinstance(item, (tuple, list)) and len(item) == 2 for item in items):
+    # Return 0 for empty list of items
+    if not items:
+        return 0
+    
+    if not all(isinstance(item, (tuple, list)) and len(item) == 2 for item in items):
         raise ValueError("Items must be a list of (weight, value) tuples")
     
     for weight, value in items:
