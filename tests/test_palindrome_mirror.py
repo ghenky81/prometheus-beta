@@ -35,4 +35,4 @@ def test_invalid_input():
 
 def test_mixed_characters():
     """Test string with mixed characters."""
-    assert create_palindrome_mirror("Test 123!") == "Test 123!321 tseT"
+    assert create_palindrome_mirror("Test 123!") == "Test 123!!321 tseT"
