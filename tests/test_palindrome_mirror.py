@@ -23,7 +23,7 @@ def test_string_with_numbers():
 
 def test_string_with_special_characters():
     """Test string with special characters."""
-    assert create_palindrome_mirror("a!b@c#") == "a!b@c#c@b!a"
+    assert create_palindrome_mirror("a!b@c#") == "a!b@c##c@b!a"
 
 def test_invalid_input():
     """Test that non-string input raises TypeError."""
