@@ -1,5 +1,6 @@
 import heapq
 from typing import List, Dict, Optional, Tuple
+import math
 
 def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict[int, Dict[int, int]]]:
     """
@@ -102,9 +103,18 @@ def johnsons_algorithm(graph: Dict[int, List[Tuple[int, int]]]) -> Optional[Dict
                     heapq.heappush(pq, (distance, v))
         
         # Adjust distances back to original weights
-        shortest_paths[source] = {
-            v: (dist[v] - h[source] + h[v]) if dist[v] != float('inf') else float('inf')
-            for v in vertices
-        }
+        paths_from_source = {}
+        for v in vertices:
+            # Only adjust if a path exists
+            if dist[v] != float('inf'):
+                paths_from_source[v] = dist[v] - h[source] + h[v]
+            else:
+                paths_from_source[v] = float('inf')
+            
+            # Ensure zero distance to self
+            if v == source:
+                paths_from_source[v] = 0
+        
+        shortest_paths[source] = paths_from_source
     
     return shortest_paths
