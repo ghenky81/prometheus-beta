@@ -1,4 +1,5 @@
 import sys
+import os
 
 class ColoredLogger:
     """
@@ -50,6 +51,7 @@ class ColoredLogger:
         
         # Print the message
         print(colored_message, file=file)
+        file.flush()  # Ensure output is immediate
         
     @classmethod
     def debug(cls, message, **kwargs):
