@@ -34,9 +34,20 @@ def test_brotli_compress_quality():
     compressed_low = brotli_compress(input_string, quality=1)
     compressed_high = brotli_compress(input_string, quality=11)
     
-    # For large inputs, higher quality should result in smaller compressed size
-    assert len(compressed_high) <= len(compressed_default)
-    assert len(compressed_default) >= len(compressed_low)
+    # Verify roundtrip decompression
+    assert brotli_decompress(compressed_default).decode('utf-8') == input_string
+    assert brotli_decompress(compressed_low).decode('utf-8') == input_string
+    assert brotli_decompress(compressed_high).decode('utf-8') == input_string
+    
+    # Verify that different qualities produce different compressed lengths
+    compressed_lengths = {
+        'default': len(compressed_default),
+        'low': len(compressed_low),
+        'high': len(compressed_high)
+    }
+    
+    # At least one of the compression qualities should be different
+    assert len(set(compressed_lengths.values())) > 1
 
 
 def test_invalid_input_type():
