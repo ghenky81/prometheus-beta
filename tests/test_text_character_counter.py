@@ -39,5 +39,4 @@ def test_invalid_input_type():
 def test_unicode_text():
     """Test handling of text with unicode characters."""
     result = count_vowels_and_consonants("hèllö wörld")
-    # Note: this test checks standard ASCII vowels only
-    assert result == {'vowels': 3, 'consonants': 6}
+    assert result == {'vowels': 0, 'consonants': 7}, "Function should strip non-ASCII characters"
