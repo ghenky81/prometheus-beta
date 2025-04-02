@@ -78,3 +78,22 @@ def test_edge_cases():
     
     assert brotli_decompress(compressed_string) == empty_string.encode('utf-8')
     assert brotli_decompress(compressed_bytes) == empty_bytes
+
+
+def test_compression_modes():
+    """Test different compression modes."""
+    text_input = "Compression mode test"
+    
+    # Test generic mode
+    generic_compressed = brotli_compress(text_input, mode=brotli.MODE_GENERIC)
+    
+    # Test text mode
+    text_compressed = brotli_compress(text_input, mode=brotli.MODE_TEXT)
+    
+    # Verify that compression worked
+    assert isinstance(generic_compressed, bytes)
+    assert isinstance(text_compressed, bytes)
+    
+    # Verify roundtrip decompression
+    assert brotli_decompress(generic_compressed).decode('utf-8') == text_input
+    assert brotli_decompress(text_compressed).decode('utf-8') == text_input
